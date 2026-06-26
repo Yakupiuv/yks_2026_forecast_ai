@@ -1,4 +1,4 @@
-YKS 2026 Üniversite Puan Tahmin Modeli
+## YKS 2026 Üniversite Puan Tahmin Modeli
 
 Geçmiş yıllardaki üniversite yerleştirme verilerini kullanarak 2025 performansını test eden (2022 - 2024 verileri ile) ve 2026 puanlarını tahmin eden bir model yaptım.
 
@@ -63,6 +63,6 @@ Model 2025 verisini baz alarak:
 - `universite_2026.csv` → final tahmin çıktısı  
 
 
-## 📌 Not
+## Not
 
 Bu model kesin sonuç vermez, sadece geçmiş verilerdeki pattern’leri öğrenerek geleceğe yönelik tahmin üretir.
