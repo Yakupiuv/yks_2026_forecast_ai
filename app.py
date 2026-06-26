@@ -51,6 +51,13 @@ else:
 
     df.to_parquet("features_cache.parquet", index=False)
 
+if "key" not in df.columns:
+    df["key"] = (
+        df["universite"] + "_" +
+        df["fakulte"] + "_" +
+        df["bolum"]
+    )
+
 df = df.dropna(subset=["puan", "lag1", "lag2"])
 
 features = [
@@ -79,7 +86,7 @@ y_train = train_df["puan"]
 X_test = test_df[features]
 y_test = test_df["puan"]
 
-# Model Ayarları Yaptım
+# Model
 model = CatBoostRegressor(
     iterations=5000,
     depth=8,
@@ -105,16 +112,24 @@ print("\n2025 Sonucu : ")
 print(f"Doğruluk : %{accuracy:.2f}")
 
 # 2026 Tahmini
-
 base_2025 = df[df["yil"] == 2025].copy()
 base_2025["yil"] = 2026
 base_2025["puan"] = np.nan
 base_2025["siralama"] = np.nan
 
+for temp_df in [df, base_2025]:
+    if "key" not in temp_df.columns:
+        temp_df["key"] = temp_df["universite"] + "_" + temp_df["fakulte"] + "_" + temp_df["bolum"]
+
 future = pd.concat([df, base_2025], ignore_index=True)
 future = future.sort_values(["key", "yil"])
 
-future = future.groupby("key", group_keys=False).ffill()
+future = future.reset_index(drop=True) 
+
+if "key" not in future.columns:
+    future["key"] = future["universite"] + "_" + future["fakulte"] + "_" + future["bolum"]
+
+future = future.groupby("key", group_keys=False).apply(lambda x: x.ffill())
 
 g = future.groupby("key")["puan"]
 future["lag1"] = g.shift(1)
